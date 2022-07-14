@@ -62,18 +62,11 @@ typedef glm::dmat4   Mat4;
 #define USE_CAPTURE    (0)
 
 namespace {
-  Float     PI_               = (Float)3.14159265358979323846;
   Float     fixed_dt          = (Float)(1.0 / 60.0);
   glm::vec3 cam_clamp_pos_min = glm::vec3(-3.0f, +0.0f, -5.5f);
   glm::vec3 cam_clamp_pos_max = glm::vec3(+3.0f, +5.5f, 15.0f);
   glm::vec3 cam_clamp_tgt_min = glm::vec3(-3.0f, -5.5f, +0.0f);
   glm::vec3 cam_clamp_tgt_max = glm::vec3(+3.0f, +5.5f, +0.0f);
-  Vec3      world_bounds_min  = Vec3((Float)-2.5, (Float)-1.0, (Float)-2.5);
-  Vec3      world_bounds_max  = Vec3((Float)+2.5, (Float)10.0, (Float)+2.5);
-  double    dev_comp_min      = 1.0 / 2000000.0;
-  double    dev_comp_max      = 1.0 / 1000.0;
-  double    vol_comp_min      = 0.0;
-  double    vol_comp_max      = 0.001;
 };
 
 struct DebugInfo {
@@ -703,6 +696,7 @@ void display_imgui() {
     if (ImGui::Button("Run")) {
       ctx.paused = false;
     }
+    ImGui::End();
     ImGui::Begin("Camera");
     if (ImGui::Button("Reset")) {
       ctx.camera.reset();
