@@ -156,6 +156,39 @@ struct Shadow {
 
 struct Context;
 
+class Grid {
+public:
+private:
+  std::vector<Float> data;
+  std::array<int, 4> dimensions;
+};
+
+class WaveGrid {
+private:
+  void advection_step(Float dt) {
+    
+  }
+  void diffusion_step(Float dt) {
+    
+  }
+  void precompute_profile_buffer() {
+
+  }
+public:
+  struct Settings {
+    Float size = 50;
+    //TODO
+  };
+  WaveGrid(Settings& st) {
+    
+  }
+  void TimeStep(Float dt) {
+    advection_step(dt);
+    diffusion_step(dt);
+    precompute_profile_buffer();
+  }
+};
+
 class Scene {
 public:
   enum {
