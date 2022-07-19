@@ -189,6 +189,16 @@ public:
   }
 };
 
+class WaterSurfaceMesh {
+public:
+  WaterSurfaceMesh() {
+    
+  }
+  void Draw() {
+
+  }
+};
+
 class Scene {
 public:
   enum {
