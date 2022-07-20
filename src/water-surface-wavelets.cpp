@@ -156,6 +156,14 @@ struct Shadow {
 
 struct Context;
 
+class ProfileBuffer{
+public:
+  std::vector<std::array<float, 4>> data;
+  void Precompute() {
+    
+  }
+};
+
 class Grid {
 public:
 private:
