@@ -60,6 +60,7 @@ typedef glm::dmat4   Mat4;
 
 #define USE_TEST_SCENE (1)
 #define USE_CAPTURE    (0)
+#define USE_TEST_CODE  (1)
 
 namespace {
   Float     fixed_dt          = (Float)(1.0 / 60.0);
@@ -67,6 +68,10 @@ namespace {
   glm::vec3 cam_clamp_pos_max = glm::vec3(+3.0f, +5.5f, 15.0f);
   glm::vec3 cam_clamp_tgt_min = glm::vec3(-3.0f, -5.5f, +0.0f);
   glm::vec3 cam_clamp_tgt_max = glm::vec3(+3.0f, +5.5f, +0.0f);
+
+//  auto     &raw_data          = harbor_data;
+//  int       N                 = sqrt(sizeof(raw_data) / sizeof(float));
+  int       N                 = 400;
 };
 
 struct DebugInfo {
@@ -171,6 +176,20 @@ private:
   std::array<int, 4> dimensions;
 };
 
+class Spectrum {
+public:
+  Spectrum(Float windSpeed) {
+    
+  }
+};
+
+class Environment {
+public:
+  float _dx;
+  Environment(Float size) : _dx((2 * size) / N) {
+    
+  }
+};
 class WaveGrid {
 private:
   void advection_step(Float dt) {
@@ -184,10 +203,18 @@ private:
   }
 public:
   struct Settings {
-    Float size = 50;
-    //TODO
+    Float size    = 50;
+    int   n_x     = 100;
+    int   n_theta = 8;
+    int   n_zeta  = 1;
+    enum SpectrumType {
+      LinearBasis,
+      PiersonMoskowitz
+    } spectrumType = PiersonMoskowitz;
   };
-  WaveGrid(Settings& st) {
+  Spectrum    m_spectrum;
+  Environment m_enviroment;
+  WaveGrid(Settings& s) : m_spectrum((Float)10.0), m_enviroment(s.size) {
     
   }
   void TimeStep(Float dt) {
@@ -234,7 +261,6 @@ Material mat_gold = {
 };
 
 struct Context {
-  std::string   in_fname;
   std::uint32_t frame;
   float         time_sum;
   DebugInfo     debug_info;
@@ -252,7 +278,7 @@ struct Context {
   GLint         vp[4];
   GLdouble      modelview_mtx[16];
   GLdouble      proj_mtx[16];
-  Context() : in_fname(), frame(0), time_sum(0.0f), debug_info(), scene(nullptr), scene_num(Scene::eDefault), material(mat_gold), camera(), paused(false), params(), floor(), light(), floor_shadow(), window_w(0), window_h(0), vp(), modelview_mtx(), proj_mtx() {}
+  Context() : frame(0), time_sum(0.0f), debug_info(), scene(nullptr), scene_num(Scene::eDefault), material(mat_gold), camera(), paused(false), params(), floor(), light(), floor_shadow(), window_w(0), window_h(0), vp(), modelview_mtx(), proj_mtx() {}
 };
 
 Context g_Context;
@@ -648,14 +674,19 @@ public:
     auto& ctx = g_Context;
   }
 };
+
+#if USE_TEST_CODE
+void test() {
+  WaveGrid::Settings s;
+  WaveGrid grid(s);
+}
+#endif
 void initialize(int argc, char* argv[]) {
 #if defined(WIN32)
   _CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 #endif
   Context& ctx = g_Context;
-  if (argc > 1) {
-    ctx.in_fname = std::string(argv[1]);
-  }
+
   glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
   glClearAccum(0.0f, 0.0f, 0.0f, 0.0f); 
   glClearDepth(1.0);
@@ -709,6 +740,10 @@ void initialize(int argc, char* argv[]) {
   glm::vec3 v2(+1.0f, 0.0f, -1.0f);
   find_plane(&ctx.floor, v0, v1, v2);
   std::srand((unsigned)time( NULL ));
+
+#if USE_TEST_CODE
+  test();
+#endif
 }
 
 void restart() {
